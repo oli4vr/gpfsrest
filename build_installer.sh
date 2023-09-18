@@ -6,11 +6,16 @@
 echo "gpfsrest package builder script"
 echo "by Olivier Van Rompuy 2023    Westpole"
 echo "###################"
-echo "git clone https://github.com/oli4vr/restit.git" 
-git clone https://github.com/oli4vr/restit.git
 if ! test -d restit
 then
- echo "Error : restit dir not found, git clone failed" 
+ echo "git clone https://github.com/oli4vr/restit.git" 
+ git clone https://github.com/oli4vr/restit.git
+ if ! test -d restit
+ then
+  echo "Error : git clone failed" 
+ fi
+else
+ echo "Subdir restit found"
 fi
 cp main.csv restit/
 cp gpfs.sh restit/
@@ -21,7 +26,6 @@ make bundle
 make clean
 mv restit.*.sh ..
 cd ..
-rm -rf restit
 chmod a+rx restit.*.sh
 echo "###################"
 echo "Installer Package :" $(ls -ltr restit.*.sh | tail)
