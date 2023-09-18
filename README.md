@@ -14,9 +14,13 @@ bash build_installer.sh</pre>
 Download the zip files and upload them to the linux host you want to build it on :<br />
 https://github.com/oli4vr/gpfsrest/archive/refs/heads/main.zip<br />
 https://github.com/oli4vr/restit/archive/refs/heads/main.zip<br />
-<pre>Unpack the gpfsrest zip file. Rename the subdir to gpfsrest.
-Then go into this subdir (cd gpfsrest). In gpfsrest unpack the restit zip file and rename the subdir to restit.
-Then run the build script :
+<p>Unpack the gpfsrest zip file. Rename the subdir to gpfsrest. Then go into this subdir (cd gpfsrest). In gpfsrest unpack the restit zip file and rename the subdir to restit.
+Then run the build script :</p>
+<pre>unzip gpfsrest-main.zip
+mv gpfsrest-main gpfsrest
+cd gpfsrest
+unzip ../restit-main.zip
+mv restit-main restit
 bash build_installer.sh</pre>
 
 # Install/Uninstall on gpfs nodes
