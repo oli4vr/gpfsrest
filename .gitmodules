@@ -1,0 +1,3 @@
+[submodule "restit"]
+	path = restit
+	url = https://github.com/oli4vr/restit
