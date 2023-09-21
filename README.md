@@ -24,4 +24,4 @@ mv restit-main restit
 bash build_installer.sh</pre>
 
 # Install/Uninstall on gpfs nodes
-Follow the instructions provided by the scripts output.
+Copy the installer package/script to the hosts you want to install it on. Follow the instructions provided by the scripts output to install/uninstall.
