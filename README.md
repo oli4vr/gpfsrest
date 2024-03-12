@@ -25,3 +25,6 @@ bash build_installer.sh</pre>
 
 # Install/Uninstall on gpfs nodes
 Copy the installer package/script to the hosts you want to install it on. Follow the instructions provided by the scripts output to install/uninstall.
+
+# RPM build
+When /usr/bin/rpmbuild exists an rpm package will be generated. You can then use the rpm package to install the sensor instead of the install script.
