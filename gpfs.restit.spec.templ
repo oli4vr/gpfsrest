@@ -1,0 +1,42 @@
+Name:           gpfs.restit
+Version:        0.2
+Release:        __RELEASE__
+Summary:        GPFS REST API health check sensor
+License:        GPL
+URL:            https://github.com/oli4vr
+BuildArch:      noarch
+BuildRoot:      %{_tmppath}/%{name}-build
+Requires:       gpfs.base
+
+%description
+GPFS REST API health check sensor
+
+%prep
+mkdir %{name}-%{version}
+cp %{_sourcedir}/gpfsrest.sh .
+
+%build
+# Nothing to build
+
+%install
+mkdir -p $RPM_BUILD_ROOT/opt/gpfsrest
+install -m 0700 gpfsrest.sh $RPM_BUILD_ROOT/opt/gpfsrest/
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+rm -rf %{_tmppath}/%{name}
+rm -rf %{_topdir}/BUILD/%{name}
+rm -rf gpfsrest
+
+%files
+%defattr(-,root,root,-)
+/opt/gpfsrest/gpfsrest.sh
+
+%post
+chmod u+x /opt/gpfsrest
+/opt/gpfsrest/gpfsrest.sh
+
+%preun
+chmod u+x /opt/gpfsrest
+/opt/gpfsrest/gpfsrest.sh -u
+
