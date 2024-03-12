@@ -34,9 +34,12 @@ do
  /usr/lpp/mmfs/bin/mmlsfileset $FSYS -i -Y >${TMPF}
  cat ${TMPF} | grep -v 'HEADER' | cut -d\: -f ${NRfsetnm},${NRinodes},${NRinomax} | awk -F\: '{pct=$(2)*100/($(3)+1);printf("%d %s %d %d\n",pct,$1,$2,$3);}' | sort -n -r -k 1 | head -n1 | while read ipct fset icur imax
  do
-  echo $ipct HIGHEST_FILESET_USED
-  echo $fset HIGHEST_FILESET_NAME
+  echo $ipct $fset
  done
 
  rm ${TMPF}
+done | sort -n -r -k 1 | head -n1 | while read ipctf fsetf
+do
+ echo $ipctf HIGHEST_FILESET_USED
+ echo $fsetf HIGHEST_FILESET_NAME
 done
