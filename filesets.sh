@@ -22,7 +22,7 @@ do
  # Increase up to MAXN times per 24h
  cat ${TMPF} | grep -v 'HEADER' | cut -d\: -f ${NRfsetnm},${NRinodes},${NRinomax} | awk -F\: '{pct=$(2)*100/($(3)+1); if (pct>'${THR}') {itgt=$(2)*100/'$TGT';printf("%d %s %d %d %d\n",pct,$1,$2,$3,itgt);}}' | sort -n -r -k 1 | while read ipct fset icur imax itgt
  do
-  NRE=$(cat ${LOGFILE} | awk '{if ($3=="'$fset'") {print $0}}'| wc -l | xargs echo)
+  NRE=$(cat ${LOGFILE} | awk '{if ($2=="'${FSYS}'" && $3=="'${fset}'") {print $0}}'| wc -l | xargs echo)
   if ((NRE<MAXN))
   then
    echo /usr/lpp/mmfs/bin/mmchfileset $FSYS $fset --inode-limit $itgt >> $LOGFILE
@@ -32,14 +32,7 @@ do
 
  # Report
  /usr/lpp/mmfs/bin/mmlsfileset $FSYS -i -Y >${TMPF}
- cat ${TMPF} | grep -v 'HEADER' | cut -d\: -f ${NRfsetnm},${NRinodes},${NRinomax} | awk -F\: '{pct=$(2)*100/($(3)+1);printf("%d %s %d %d\n",pct,$1,$2,$3);}' | sort -n -r -k 1 | head -n1 | while read ipct fset icur imax
- do
-  echo $ipct $fset
- done
+ cat ${TMPF} | grep -v 'HEADER' | cut -d\: -f ${NRfsetnm},${NRinodes},${NRinomax} | awk -F\: '{pct=$(2)*100/($(3)+1);printf("%d '${FSYS}'__%s\n",pct,$1);}'
 
  rm ${TMPF}
-done | sort -n -r -k 1 | head -n1 | while read ipctf fsetf
-do
- echo $ipctf HIGHEST_FILESET_USED
- echo $fsetf HIGHEST_FILESET_NAME
 done
