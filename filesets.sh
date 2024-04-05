@@ -4,15 +4,17 @@ TMPF=/tmp/fsetcheck.${RANDOM}.$(date +%Y%m%d%H%M)
 ## Self healing
 ## If set to Y it will automatically increase the max inodes of a fileset above the THR value to lower the usage to TGT pct
 ## This can only be executed MAXN nr of times in 24 hours (per fileset)
-AUTOEXTEND=N
-THR=92
-TGT=90
+AUTOEXTEND=Y
+THR=95
+TGT=93
 MAXN=3
 
 LOGDIR=${HOME}/.restit
 LOGFILE=${LOGDIR}/inodechg.$(date +%Y%m%d).log
+EXCFILE=${LOGDIR}/autoextendexcl
 mkdir -p ${LOGDIR} 2>/dev/null
 touch ${LOGFILE}
+touch ${EXCFILE}
 
 find ${LOGDIR} -name 'inodechg.*.log' -mtime +7 -exec rm -rf {} \;
 
@@ -28,7 +30,7 @@ do
   NRinomax=$(cat ${TMPF} | head -n1 | awk -F\: '{for(n=1;n<=NF;n++){if ($(n)=="maxInodes") {print n;}}}')
 
   # Increase up to MAXN times per 24h
-  cat ${TMPF} | grep -v 'HEADER' | cut -d\: -f ${NRfsetnm},${NRinodes},${NRinomax} | awk -F\: '{pct=$(2)*100/($(3)+1); if (pct>'${THR}') {itgt=$(2)*100/'$TGT';printf("%d %s %d %d %d\n",pct,$1,$2,$3,itgt);}}' | sort -n -r -k 1 | while read ipct fset icur imax itgt
+  cat ${TMPF} | grep -vwf ${EXCFILE} |grep -v 'HEADER' | cut -d\: -f ${NRfsetnm},${NRinodes},${NRinomax} | awk -F\: '{pct=$(2)*100/($(3)+1); if (pct>'${THR}') {itgt=$(2)*100/'$TGT';printf("%d %s %d %d %d\n",pct,$1,$2,$3,itgt);}}' | sort -n -r -k 1 | while read ipct fset icur imax itgt
   do
    NRE=$(cat ${LOGFILE} | awk '{if ($2=="'${FSYS}'" && $3=="'${fset}'") {print $0}}'| wc -l | xargs echo)
    if ((NRE<MAXN))
