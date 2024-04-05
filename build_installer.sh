@@ -6,6 +6,7 @@
 echo "gpfsrest package builder script"
 echo "by Olivier Van Rompuy 2023    Westpole"
 echo "###################"
+export SUBNAME=$(cat main.csv | cut -d ';' -f 2 | xargs echo | tr ' ' '-')
 if ! test -d restit
 then
  echo "git clone https://github.com/oli4vr/restit.git" 
@@ -33,7 +34,7 @@ then
  rm -rf ~/rpmbuild 2>/dev/null
  cp restit.*.sh gpfsrest.sh
  chmod u+x gpfsrest.sh
- cat gpfs.restit.spec.templ | sed -e 's/__RELEASE__/'$(date "+%Y %j" | awk '{printf("%02d%03d\n",$(1)-2024,$2);}')'/' >gpfs.restit.spec
+ cat gpfs.restit.spec.templ | sed -e 's/__RELEASE__/'$(date "+%Y %j" | awk '{printf("%02d%03d\n",$(1)-2024,$2);}')'/' | sed -e 's/__SUBNAME__/'${SUBNAME}'/' >gpfs.restit.spec
  echo rpmbuild --define \"_sourcedir $(pwd)\" -bb gpfs.restit.spec
  rpmbuild --define "_sourcedir $(pwd)" -bb gpfs.restit.spec >/dev/null 2>&1
  mv $(find ~/rpmbuild/RPMS -name '*.rpm'  | head -n1) .
