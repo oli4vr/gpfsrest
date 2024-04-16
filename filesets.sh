@@ -1,6 +1,17 @@
 #!/bin/bash
 TMPF=/tmp/fsetcheck.${RANDOM}.$(date +%Y%m%d%H%M)
 
+LOGDIR=${HOME}/.restit
+CFGFILE=${LOGDIR}/fsetret.cfg
+LOGFILE=${LOGDIR}/inodechg.$(date +%Y%m%d).log
+EXCFILE=${LOGDIR}/autoextendexcl
+mkdir -p ${LOGDIR} 2>/dev/null
+touch ${LOGFILE}
+touch ${EXCFILE}
+
+if ! test -f $CFGFILE 
+then
+cat >$CFGFILE <<EOF
 ## Self healing
 ## If set to Y it will automatically increase the max inodes of a fileset above the THR value to lower the usage to TGT pct
 ## This can only be executed MAXN nr of times in 24 hours (per fileset)
@@ -9,12 +20,11 @@ THR=95
 TGT=93
 MAXN=3
 
-LOGDIR=${HOME}/.restit
-LOGFILE=${LOGDIR}/inodechg.$(date +%Y%m%d).log
-EXCFILE=${LOGDIR}/autoextendexcl
-mkdir -p ${LOGDIR} 2>/dev/null
-touch ${LOGFILE}
-touch ${EXCFILE}
+EOF
+chmod +x $CFGFILE
+fi
+
+. ${CFGFILE}
 
 find ${LOGDIR} -name 'inodechg.*.log' -mtime +7 -exec rm -rf {} \;
 
