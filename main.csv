@@ -1,2 +1,3 @@
 gpfs;health;300;mmhealth.sh;
 gpfs;filesets;1800;filesets.sh;
+gpfs;chfileset;300;chfileset.sh;

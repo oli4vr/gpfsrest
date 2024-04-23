@@ -19,8 +19,10 @@ else
  echo "Subdir restit found"
 fi
 cp main.csv restit/
-cp mmhealth.sh restit/
-cp filesets.sh restit/
+cat main.csv  | cut -d ';' -f 4 | while read sfile
+do
+ cp $sfile restit/
+done
 ps -ef | grep -v grep | grep -i restit | awk '{print $2}' | xargs -n1 kill -9 >/dev/null 2>&1
 cd restit
 make
