@@ -71,7 +71,7 @@ You can filter a specific category, type or sensor by using it's name in the URL
 - warnlow : Warning low threshold
 <br />Example : http://127.0.0.1:40480/prtg/filesets?crithigh=90&warnhigh=80
 
-# Check_mk support
+# Check_mk support added
 Check_mk local scripts are installed in /usr/lib/check_mk_agent/local/ <br/>
 They depend on the local http service and require curl to be installed
 <pre>sudo yum install curl</pre>
