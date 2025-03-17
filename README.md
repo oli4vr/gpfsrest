@@ -76,3 +76,7 @@ Check_mk local scripts are installed in /usr/lib/check_mk_agent/local/ <br/>
 They depend on the local http service and require curl to be installed
 <pre>sudo yum install curl</pre>
 Just install & activate the check_mk agent.
+<br/>You can configure the check_mk fileset thresholds by editing /root/.restit/checkmk.cfg
+<pre>FSET_HI=90
+FSET_LO=80</pre>
+These thresholds are seperate from the autoextend thresholds and are purely for determining warning and critical levels in check_mk.
