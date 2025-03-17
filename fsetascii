@@ -1,0 +1,38 @@
+#!/bin/bash
+HPRT=$(cat ~/.restit/restit.cfg | grep -w RestPort | awk '{print $3}')
+
+if [ "$HPRT" = "" ]
+then
+ exit 1
+fi
+
+if ! test -r ~/.restit/checkmk.cfg
+then
+cat >~/.restit/checkmk.cfg <<CFGEOF
+#!/bin/bash
+##
+# checkmk script config file
+FSET_HI=90
+FSET_LO=80
+CFGEOF
+fi
+
+chmod a+rx ~/.restit/checkmk.cfg
+
+. ~/.restit/checkmk.cfg
+
+curl http://127.0.0.1:${HPRT}/gpfs/filesets 2>/dev/null | jq -r '.restit.results[] | .gpfs.filesets | to_entries[] | select(.key | startswith("gpfs__")) | "\(.value) \(.key)" ' | sed -e 's/ gpfs__/ /' | while read value key aaa
+do
+ if ((value>FSET_HI))
+ then
+  echo 2 \"SCALE_FSET_${key}\" pctused=$value Fileset usage above critical level
+ else
+  if ((value>FSET_LO))
+  then
+   echo 1 \"SCALE_FSET_${key}\" pctused=$value Fileset usage above warning level
+  else
+   echo 0 \"SCALE_FSET_${key}\" pctused=$value Fileset usage ok
+  fi
+ fi
+done
+

@@ -1,0 +1,21 @@
+#!/bin/bash
+HPRT=$(cat ~/.restit/restit.cfg | grep -w RestPort | awk '{print $3}')
+
+curl http://127.0.0.1:${HPRT}/gpfs/health?search=_DEGRADED 2>/dev/null | jq -r '.restit.results[] | .gpfs.health | to_entries[] | select(.key | endswith("_DEGRADED")) | "\(.value) \(.key)"' | while read value key aaa
+do
+ if ((value>0))
+ then
+  echo 1 \"SCALE_${key}\" amount=${value} Warning: Degraded state
+ else
+  echo 0 \"SCALE_${key}\" amount=${value}
+ fi
+done
+curl http://127.0.0.1:${HPRT}/gpfs/health?search=_FAILED 2>/dev/null | jq -r '.restit.results[] | .gpfs.health | to_entries[] | select(.key | endswith("_FAILED")) | "\(.value) \(.key)"' | while read value key aaa
+do
+ if ((value>0))
+ then
+  echo 2 \"SCALE_${key}\" amount=${value} Critical: Degraded state
+ else
+  echo 0 \"SCALE_${key}\" amount=${value}
+ fi
+done
